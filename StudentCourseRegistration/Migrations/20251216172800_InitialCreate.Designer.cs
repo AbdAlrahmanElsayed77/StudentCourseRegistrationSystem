@@ -12,7 +12,7 @@ using StudentCourseRegistration.Data;
 namespace StudentCourseRegistration.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251216155723_InitialCreate")]
+    [Migration("20251216172800_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

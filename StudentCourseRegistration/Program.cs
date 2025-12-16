@@ -46,6 +46,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
+// Add this to fix IdentityUser injection issues
+builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
+
 // Configure Application Cookie
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -96,7 +100,6 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 // Use Request Localization
@@ -113,14 +116,19 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
     try
     {
-        await SeedData.Initialize(services);
+        logger.LogInformation("=== Starting Database Seeding ===");
+        await SeedData.Initialize(services, logger);
+        logger.LogInformation("=== Database Seeding Completed Successfully ===");
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        logger.LogError(ex, "=== ERROR: An error occurred while seeding the database ===");
+        logger.LogError($"Exception Message: {ex.Message}");
+        logger.LogError($"Stack Trace: {ex.StackTrace}");
     }
 }
 
