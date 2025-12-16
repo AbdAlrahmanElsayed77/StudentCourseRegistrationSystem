@@ -3,6 +3,72 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to Student Course Registration System</h1>
+    <p class="lead">Register for courses and manage your academic schedule</p>
+</div>
+
+<div class="row mt-5">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Courses</h5>
+                    <p class="card-text">Add, edit, or remove courses from the system.</p>
+                    <a asp-controller="Courses" asp-action="Index" class="btn btn-primary">Go to Courses</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Students</h5>
+                    <p class="card-text">View all registered students and their courses.</p>
+                    <a asp-controller="Admin" asp-action="Students" class="btn btn-primary">View Students</a>
+                </div>
+            </div>
+        </div>
+    }
+    else if (User.IsInRole("Student"))
+    {
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Browse Courses</h5>
+                    <p class="card-text">Browse available courses and register.</p>
+                    <a asp-controller="Courses" asp-action="Available" class="btn btn-primary">Browse Courses</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">My Courses</h5>
+                    <p class="card-text">View and manage your registered courses.</p>
+                    <a asp-controller="Courses" asp-action="MyCourses" class="btn btn-primary">My Courses</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">New Student?</h5>
+                    <p class="card-text">Register now to start browsing and enrolling in courses.</p>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-success">Register Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Already Registered?</h5>
+                    <p class="card-text">Login to access your courses and registration.</p>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Login</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -12,7 +12,7 @@ using StudentCourseRegistration.Data;
 namespace StudentCourseRegistration.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251216172800_InitialCreate")]
+    [Migration("20251216195706_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace StudentCourseRegistration.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

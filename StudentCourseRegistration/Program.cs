@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using StudentCourseRegistration.Data;
 using StudentCourseRegistration.Models.Entities;
+using StudentCourseRegistration.Repositories.Implementations;
+using StudentCourseRegistration.Repositories.Interfaces;
+using StudentCourseRegistration.Services.Implementations;
+using StudentCourseRegistration.Services.Interfaces;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +30,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
 
     // Lockout settings
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -34,30 +37,25 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Lockout.AllowedForNewUsers = true;
 
     // User settings
-    options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = true;
 
-    // Sign in settings
-    options.SignIn.RequireConfirmedEmail = true;
+    // Sign in settings - ÚØáåã ßáåã ãÄÞÊÇð
+    options.SignIn.RequireConfirmedEmail = false; // ? ãåã
     options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedAccount = false; // ? ãåã
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
-
-// Add this to fix IdentityUser injection issues
-builder.Services.AddScoped<SignInManager<ApplicationUser>>();
-builder.Services.AddScoped<UserManager<ApplicationUser>>();
 
 // Configure Application Cookie
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromHours(24);
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
-    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
 
@@ -67,6 +65,8 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
+
+builder.Services.AddRazorPages();
 
 // Configure Supported Cultures
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -85,6 +85,15 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Insert(1, new CookieRequestCultureProvider());
 });
 
+// Register Repositories
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IStudentCourseRepository, StudentCourseRepository>();
+
+// Register Services
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IStudentCourseService, StudentCourseService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -100,9 +109,9 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-// Use Request Localization
 app.UseRequestLocalization();
 
 app.UseAuthentication();
@@ -112,7 +121,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Seed Database with Roles and Admin User
+app.MapRazorPages();
+
+// Seed Database
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -121,14 +132,12 @@ using (var scope = app.Services.CreateScope())
     try
     {
         logger.LogInformation("=== Starting Database Seeding ===");
-        await SeedData.Initialize(services, logger);
+        await SeedData.Initialize(services);
         logger.LogInformation("=== Database Seeding Completed Successfully ===");
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "=== ERROR: An error occurred while seeding the database ===");
-        logger.LogError($"Exception Message: {ex.Message}");
-        logger.LogError($"Stack Trace: {ex.StackTrace}");
     }
 }
 
