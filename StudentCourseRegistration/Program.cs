@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using StudentCourseRegistration.Data;
 using StudentCourseRegistration.Models.Entities;
@@ -7,6 +8,7 @@ using StudentCourseRegistration.Repositories.Implementations;
 using StudentCourseRegistration.Repositories.Interfaces;
 using StudentCourseRegistration.Services.Implementations;
 using StudentCourseRegistration.Services.Interfaces;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,13 +42,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.User.RequireUniqueEmail = true;
 
     // Sign-in settings
-    options.SignIn.RequireConfirmedAccount = true; // ? Enable Email Confirmation
+    options.SignIn.RequireConfirmedAccount = true;
     options.SignIn.RequireConfirmedEmail = true;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register Email Service (Singleton to avoid creating multiple instances)
+// Register Email Service
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IEmailSender>(sp => sp.GetRequiredService<EmailService>());
 builder.Services.AddScoped<IEmailService>(sp => sp.GetRequiredService<EmailService>());
@@ -69,13 +71,21 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorPages()
     .AddViewLocalization();
 
-// Configure Supported Cultures
+// ? Configure Supported Cultures
+var supportedCultures = new[]
+{
+    new CultureInfo("en"),
+    new CultureInfo("ar")
+};
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { "en", "ar" };
-    options.SetDefaultCulture("en")
-        .AddSupportedCultures(supportedCultures)
-        .AddSupportedUICultures(supportedCultures);
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    // ? Use Cookie for culture preference
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
 });
 
 var app = builder.Build();
@@ -109,7 +119,7 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// ? Use Request Localization
+// ? Use Request Localization (IMPORTANT: before routing)
 app.UseRequestLocalization();
 
 app.UseRouting();

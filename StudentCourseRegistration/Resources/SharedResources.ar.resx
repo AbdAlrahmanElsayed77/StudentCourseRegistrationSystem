@@ -14,69 +14,69 @@
 	</resheader>
 
 	<data name="Home" xml:space="preserve">
-    <value>الرئيسية</value>
-  </data>
+		<value>الرئيسية</value>
+	</data>
 	<data name="ManageCourses" xml:space="preserve">
-    <value>إدارة المقررات</value>
-  </data>
+		<value>إدارة المقررات</value>
+	</data>
 	<data name="Students" xml:space="preserve">
-    <value>الطلاب</value>
-  </data>
+		<value>الطلاب</value>
+	</data>
 	<data name="BrowseCourses" xml:space="preserve">
-    <value>تصفح المقررات</value>
-  </data>
+		<value>تصفح المقررات</value>
+	</data>
 	<data name="MyCourses" xml:space="preserve">
-    <value>مقرراتي</value>
-  </data>
+		<value>مقرراتي</value>
+	</data>
 	<data name="Login" xml:space="preserve">
-    <value>تسجيل الدخول</value>
-  </data>
+		<value>تسجيل الدخول</value>
+	</data>
 	<data name="Register" xml:space="preserve">
-    <value>التسجيل</value>
-  </data>
+		<value>التسجيل</value>
+	</data>
 	<data name="Logout" xml:space="preserve">
-    <value>تسجيل الخروج</value>
-  </data>
+		<value>تسجيل الخروج</value>
+	</data>
 	<data name="Welcome" xml:space="preserve">
-    <value>مرحباً بك في نظام تسجيل المقررات</value>
-  </data>
+		<value>مرحباً بك في نظام تسجيل المقررات</value>
+	</data>
 	<data name="CourseID" xml:space="preserve">
-    <value>رمز المقرر</value>
-  </data>
+		<value>رمز المقرر</value>
+	</data>
 	<data name="CourseName" xml:space="preserve">
-    <value>اسم المقرر</value>
-  </data>
+		<value>اسم المقرر</value>
+	</data>
 	<data name="Credits" xml:space="preserve">
-    <value>الساعات المعتمدة</value>
-  </data>
+		<value>الساعات المعتمدة</value>
+	</data>
 	<data name="Semester" xml:space="preserve">
-    <value>الفصل الدراسي</value>
-  </data>
+		<value>الفصل الدراسي</value>
+	</data>
 	<data name="Actions" xml:space="preserve">
-    <value>الإجراءات</value>
-  </data>
+		<value>الإجراءات</value>
+	</data>
 	<data name="Edit" xml:space="preserve">
-    <value>تعديل</value>
-  </data>
+		<value>تعديل</value>
+	</data>
 	<data name="Delete" xml:space="preserve">
-    <value>حذف</value>
-  </data>
+		<value>حذف</value>
+	</data>
 	<data name="Details" xml:space="preserve">
-    <value>التفاصيل</value>
-  </data>
+		<value>التفاصيل</value>
+	</data>
 	<data name="AddNewCourse" xml:space="preserve">
-    <value>إضافة مقرر جديد</value>
-  </data>
+		<value>إضافة مقرر جديد</value>
+	</data>
 	<data name="Search" xml:space="preserve">
-    <value>بحث</value>
-  </data>
+		<value>بحث</value>
+	</data>
 	<data name="Status" xml:space="preserve">
-    <value>الحالة</value>
-  </data>
+		<value>الحالة</value>
+	</data>
 	<data name="Active" xml:space="preserve">
-    <value>نشط</value>
-  </data>
+		<value>نشط</value>
+	</data>
 	<data name="Inactive" xml:space="preserve">
-    <value>غير نشط</value>
-  </data>
+		<value>غير نشط</value>
+	</data>
 </root>

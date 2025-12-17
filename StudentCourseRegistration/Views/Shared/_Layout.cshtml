@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="~/StudentCourseRegistration.styles.css" asp-append-version="true" />
     
     <style>
-        /* RTL/LTR Adjustments */
         @if (isRtl) {
             <text>
             body {
@@ -46,6 +45,9 @@
     </style>
 </head>
 <body>
+    <!-- Anti-forgery token for language switcher -->
+    @Html.AntiForgeryToken()
+    
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -109,13 +111,15 @@
                             <ul class="dropdown-menu @(isRtl ? "dropdown-menu-start" : "dropdown-menu-end")" 
                                 aria-labelledby="languageDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">
+                                    <a class="dropdown-item @(currentCulture == "en" ? "active" : "")" 
+                                       href="#" onclick="changeLanguage('en'); return false;">
                                         <i class="bi bi-flag"></i> English
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="#" onclick="changeLanguage('ar'); return false;">
+                                    <a class="dropdown-item @(currentCulture == "ar" ? "active" : "")" 
+                                       href="#" onclick="changeLanguage('ar'); return false;">
                                         <i class="bi bi-flag-fill"></i> العربية
                                     </a>
                                 </li>
@@ -147,30 +151,40 @@
     
     <script>
         function changeLanguage(culture) {
-            // Create form dynamically
+            // Get the anti-forgery token
+            var token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (!token) {
+                console.error('Anti-forgery token not found');
+                return;
+            }
+            
+            // Create form
             var form = document.createElement('form');
             form.method = 'POST';
             form.action = '@Url.Action("SetLanguage", "Language")';
             
+            // Add culture input
             var cultureInput = document.createElement('input');
             cultureInput.type = 'hidden';
             cultureInput.name = 'culture';
             cultureInput.value = culture;
+            form.appendChild(cultureInput);
             
+            // Add return URL input
             var returnUrlInput = document.createElement('input');
             returnUrlInput.type = 'hidden';
             returnUrlInput.name = 'returnUrl';
             returnUrlInput.value = window.location.pathname + window.location.search;
+            form.appendChild(returnUrlInput);
             
+            // Add anti-forgery token
             var tokenInput = document.createElement('input');
             tokenInput.type = 'hidden';
             tokenInput.name = '__RequestVerificationToken';
-            tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
-            
-            form.appendChild(cultureInput);
-            form.appendChild(returnUrlInput);
+            tokenInput.value = token.value;
             form.appendChild(tokenInput);
             
+            // Submit form
             document.body.appendChild(form);
             form.submit();
         }

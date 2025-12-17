@@ -6,8 +6,21 @@ namespace StudentCourseRegistration.Controllers
     public class LanguageController : Controller
     {
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
+            if (string.IsNullOrEmpty(culture))
+            {
+                culture = "en";
+            }
+
+            // Validate culture
+            var supportedCultures = new[] { "en", "ar" };
+            if (!supportedCultures.Contains(culture))
+            {
+                culture = "en";
+            }
+
             // Set the culture cookie
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
@@ -17,17 +30,18 @@ namespace StudentCourseRegistration.Controllers
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
                     IsEssential = true,
                     Path = "/",
-                    SameSite = SameSiteMode.Lax
+                    SameSite = SameSiteMode.Lax,
+                    HttpOnly = false
                 }
             );
 
-            // ✅ التأكد من أن returnUrl صحيح
+            // Validate returnUrl
             if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
             {
                 returnUrl = "/";
             }
 
-            return Redirect(returnUrl);
+            return LocalRedirect(returnUrl);
         }
     }
 }
