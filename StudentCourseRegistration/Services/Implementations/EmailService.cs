@@ -1,10 +1,12 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using StudentCourseRegistration.Services.Interfaces;
 
 namespace StudentCourseRegistration.Services.Implementations
 {
-    public class EmailService : IEmailService
+    // ✅ الآن EmailService بيطبق الاتنين: IEmailSender و IEmailService
+    public class EmailService : IEmailSender, IEmailService
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<EmailService> _logger;
@@ -15,6 +17,7 @@ namespace StudentCourseRegistration.Services.Implementations
             _logger = logger;
         }
 
+        // ✅ هذه الـ Method اللي Identity محتاجها
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             try
@@ -55,10 +58,24 @@ namespace StudentCourseRegistration.Services.Implementations
         {
             var subject = "Confirm your email - Student Registration System";
             var message = $@"
-                <h2>Welcome to Student Course Registration System</h2>
-                <p>Please confirm your email by clicking the link below:</p>
-                <p><a href='{confirmationLink}'>Confirm Email</a></p>
-                <p>If you didn't create this account, please ignore this email.</p>
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <h2 style='color: #1b6ec2;'>Welcome to Student Course Registration System</h2>
+                    <p>Please confirm your email by clicking the link below:</p>
+                    <p style='margin: 20px 0;'>
+                        <a href='{confirmationLink}' 
+                           style='background-color: #1b6ec2; 
+                                  color: white; 
+                                  padding: 10px 20px; 
+                                  text-decoration: none; 
+                                  border-radius: 5px;
+                                  display: inline-block;'>
+                            Confirm Email
+                        </a>
+                    </p>
+                    <p style='color: #666; font-size: 14px;'>
+                        If you didn't create this account, please ignore this email.
+                    </p>
+                </div>
             ";
 
             await SendEmailAsync(email, subject, message);
@@ -68,10 +85,27 @@ namespace StudentCourseRegistration.Services.Implementations
         {
             var subject = "Reset your password - Student Registration System";
             var message = $@"
-                <h2>Password Reset Request</h2>
-                <p>Click the link below to reset your password:</p>
-                <p><a href='{resetLink}'>Reset Password</a></p>
-                <p>If you didn't request this, please ignore this email.</p>
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <h2 style='color: #1b6ec2;'>Password Reset Request</h2>
+                    <p>Click the link below to reset your password:</p>
+                    <p style='margin: 20px 0;'>
+                        <a href='{resetLink}' 
+                           style='background-color: #1b6ec2; 
+                                  color: white; 
+                                  padding: 10px 20px; 
+                                  text-decoration: none; 
+                                  border-radius: 5px;
+                                  display: inline-block;'>
+                            Reset Password
+                        </a>
+                    </p>
+                    <p style='color: #666; font-size: 14px;'>
+                        If you didn't request this, please ignore this email.
+                    </p>
+                    <p style='color: #666; font-size: 14px;'>
+                        This link will expire in 24 hours.
+                    </p>
+                </div>
             ";
 
             await SendEmailAsync(email, subject, message);

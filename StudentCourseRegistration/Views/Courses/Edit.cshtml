@@ -1,0 +1,99 @@
+﻿@model StudentCourseRegistration.Models.ViewModels.CourseViewModel
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil-square"></i> Edit Course
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedAt" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Course ID -->
+                        <div class="mb-3">
+                            <label asp-for="CourseId" class="form-label"></label>
+                            <input asp-for="CourseId" class="form-control" />
+                            <span asp-validation-for="CourseId" class="text-danger"></span>
+                        </div>
+
+                        <!-- English Name -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Arabic Name -->
+                        <div class="mb-3">
+                            <label asp-for="NameAr" class="form-label"></label>
+                            <input asp-for="NameAr" class="form-control" dir="rtl" />
+                            <span asp-validation-for="NameAr" class="text-danger"></span>
+                        </div>
+
+                        <!-- English Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Arabic Description -->
+                        <div class="mb-3">
+                            <label asp-for="DescriptionAr" class="form-label"></label>
+                            <textarea asp-for="DescriptionAr" class="form-control" rows="3" dir="rtl"></textarea>
+                            <span asp-validation-for="DescriptionAr" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <!-- Credits -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Credits" class="form-label"></label>
+                                <input asp-for="Credits" type="number" class="form-control" min="1" max="6" />
+                                <span asp-validation-for="Credits" class="text-danger"></span>
+                            </div>
+
+                            <!-- Semester -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Semester" class="form-label"></label>
+                                <input asp-for="Semester" class="form-control" />
+                                <span asp-validation-for="Semester" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Active Status -->
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label"></label>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Update Course
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}

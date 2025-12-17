@@ -1,0 +1,177 @@
+﻿@model IEnumerable<StudentCourseRegistration.Models.ViewModels.StudentCourseViewModel>
+
+@{
+    ViewData["Title"] = "My Courses";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">
+            <i class="bi bi-journal-check"></i> My Courses
+        </h1>
+        <a asp-action="Available" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Browse Courses
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center bg-primary text-white">
+                    <div class="card-body">
+                        <i class="bi bi-book display-4"></i>
+                        <h3 class="mt-2">@Model.Count()</h3>
+                        <p class="mb-0">Total Courses</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center bg-success text-white">
+                    <div class="card-body">
+                        <i class="bi bi-award display-4"></i>
+                        <h3 class="mt-2">@Model.Sum(c => c.Credits)</h3>
+                        <p class="mb-0">Total Credits</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center bg-info text-white">
+                    <div class="card-body">
+                        <i class="bi bi-check-circle display-4"></i>
+                        <h3 class="mt-2">@Model.Count(c => c.Status == "Active")</h3>
+                        <p class="mb-0">Active Courses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Course Name (Arabic)</th>
+                                <th>Credits</th>
+                                <th>Semester</th>
+                                <th>Registered Date</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">@course.CourseCode</strong>
+                                    </td>
+                                    <td>@course.CourseName</td>
+                                    <td dir="rtl">@course.CourseNameAr</td>
+                                    <td>
+                                        <span class="badge bg-info">@course.Credits</span>
+                                    </td>
+                                    <td>@course.Semester</td>
+                                    <td>@course.RegisteredAt.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (course.Status == "Active")
+                                        {
+                                            <span class="badge bg-success">@course.Status</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@course.Status</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (course.CanUnregister)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#unregisterModal_@course.Id">
+                                                <i class="bi bi-x-circle"></i> Unregister
+                                            </button>
+
+                                            <!-- Unregister Modal -->
+                                            <div class="modal fade" id="unregisterModal_@course.Id" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title">
+                                                                <i class="bi bi-exclamation-triangle"></i> Confirm Unregister
+                                                            </h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to unregister from:</p>
+                                                            <p class="text-center">
+                                                                <strong class="text-primary">@course.CourseCode</strong><br />
+                                                                <strong>@course.CourseName</strong>
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <form asp-action="Unregister" method="post" class="d-inline">
+                                                                <input type="hidden" name="registrationId" value="@course.Id" />
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <i class="bi bi-trash"></i> Unregister
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h3 class="mt-3">No Courses Yet</h3>
+                <p class="text-muted">You haven't registered for any courses yet.</p>
+                <a asp-action="Available" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Browse Available Courses
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}

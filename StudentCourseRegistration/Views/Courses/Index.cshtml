@@ -1,0 +1,139 @@
+﻿@model IEnumerable<StudentCourseRegistration.Models.ViewModels.CourseViewModel>
+
+@{
+    ViewData["Title"] = "Manage Courses";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">Manage Courses</h1>
+        <a asp-action="Create" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Add New Course
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text"
+                           name="searchTerm"
+                           class="form-control"
+                           placeholder="Search by Course ID, Name, or Semester..."
+                           value="@ViewBag.SearchTerm">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Courses Table -->
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Course ID</th>
+                                <th>Name (English)</th>
+                                <th>Name (Arabic)</th>
+                                <th>Credits</th>
+                                <th>Semester</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">@course.CourseId</strong>
+                                    </td>
+                                    <td>@course.Name</td>
+                                    <td dir="rtl">@course.NameAr</td>
+                                    <td>
+                                        <span class="badge bg-info">@course.Credits Credits</span>
+                                    </td>
+                                    <td>@course.Semester</td>
+                                    <td>
+                                        @if (course.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details"
+                                               asp-route-id="@course.Id"
+                                               class="btn btn-sm btn-info"
+                                               title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit"
+                                               asp-route-id="@course.Id"
+                                               class="btn btn-sm btn-warning"
+                                               title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Delete"
+                                               asp-route-id="@course.Id"
+                                               class="btn btn-sm btn-danger"
+                                               title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i>
+                    No courses found. Click "Add New Course" to create one.
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <p class="text-muted">
+            Total Courses: <strong>@Model.Count()</strong>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}

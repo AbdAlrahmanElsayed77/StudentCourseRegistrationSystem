@@ -1,0 +1,107 @@
+﻿@model IEnumerable<StudentCourseRegistration.Models.ViewModels.StudentCourseViewModel>
+
+@{
+    ViewData["Title"] = "Student Courses";
+    var studentName = Model.FirstOrDefault()?.StudentName ?? "Student";
+}
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <a asp-action="Students" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Students
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-person-circle"></i> @studentName's Courses
+            </h3>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Courses</h5>
+                                <h2 class="text-primary">@Model.Count()</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Credits</h5>
+                                <h2 class="text-success">@Model.Sum(c => c.Credits)</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Active Courses</h5>
+                                <h2 class="text-info">@Model.Count(c => c.Status == "Active")</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Course Name (AR)</th>
+                                <th>Credits</th>
+                                <th>Semester</th>
+                                <th>Registered Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">@course.CourseCode</strong>
+                                    </td>
+                                    <td>@course.CourseName</td>
+                                    <td dir="rtl">@course.CourseNameAr</td>
+                                    <td>
+                                        <span class="badge bg-info">@course.Credits</span>
+                                    </td>
+                                    <td>@course.Semester</td>
+                                    <td>@course.RegisteredAt.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (course.Status == "Active")
+                                        {
+                                            <span class="badge bg-success">@course.Status</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@course.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i>
+                    This student has not registered for any courses yet.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}

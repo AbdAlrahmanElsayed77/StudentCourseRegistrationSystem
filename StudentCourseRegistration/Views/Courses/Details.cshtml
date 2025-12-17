@@ -1,0 +1,153 @@
+﻿@model StudentCourseRegistration.Models.ViewModels.CourseViewModel
+@using StudentCourseRegistration.Models.ViewModels
+
+@{
+    ViewData["Title"] = "Course Details";
+    var registrations = ViewBag.Registrations as IEnumerable<StudentCourseViewModel>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Course Information -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-book"></i> Course Details
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Course ID:</dt>
+                        <dd class="col-sm-9">
+                            <h4 class="text-primary mb-0">@Model.CourseId</h4>
+                        </dd>
+
+                        <dt class="col-sm-3">Name (English):</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Name (Arabic):</dt>
+                        <dd class="col-sm-9" dir="rtl">@Model.NameAr</dd>
+
+                        <dt class="col-sm-3">Description (EN):</dt>
+                        <dd class="col-sm-9">
+                            @(string.IsNullOrEmpty(Model.Description) ? "N/A" : Model.Description)
+                        </dd>
+
+                        <dt class="col-sm-3">Description (AR):</dt>
+                        <dd class="col-sm-9" dir="rtl">
+                            @(string.IsNullOrEmpty(Model.DescriptionAr) ? "غير متوفر" : Model.DescriptionAr)
+                        </dd>
+
+                        <dt class="col-sm-3">Credits:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info fs-6">@Model.Credits Credits</span>
+                        </dd>
+
+                        <dt class="col-sm-3">Semester:</dt>
+                        <dd class="col-sm-9">@Model.Semester</dd>
+
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Created:</dt>
+                        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
+                    </dl>
+
+                    <div class="mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart"></i> Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <h1 class="display-4 text-primary">@(registrations?.Count() ?? 0)</h1>
+                        <p class="text-muted">Registered Students</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registered Students -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-people"></i> Registered Students
+            </h4>
+        </div>
+        <div class="card-body">
+            @if (registrations != null && registrations.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Registered Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int counter = 1;
+                            }
+                            @foreach (var registration in registrations)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>
+                                        <strong>@registration.StudentName</strong>
+                                    </td>
+                                    <td>@registration.StudentEmail</td>
+                                    <td>@registration.RegisteredAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        <span class="badge bg-success">@registration.Status</span>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i>
+                    No students have registered for this course yet.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}

@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Controllers\" />
-    <Folder Include="Resources\Views\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>
