@@ -22,8 +22,4 @@
     <PackageReference Include="MimeKit" Version="4.9.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
 </Project>

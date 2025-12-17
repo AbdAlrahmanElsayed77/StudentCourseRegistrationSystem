@@ -40,16 +40,16 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.User.RequireUniqueEmail = true;
 
     // Sign-in settings
-    options.SignIn.RequireConfirmedAccount = true; 
+    options.SignIn.RequireConfirmedAccount = true; // ? Enable Email Confirmation
     options.SignIn.RequireConfirmedEmail = true;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register Email Service
-builder.Services.AddTransient<EmailService>();
-builder.Services.AddTransient<IEmailSender>(provider => provider.GetRequiredService<EmailService>());
-builder.Services.AddTransient<IEmailService>(provider => provider.GetRequiredService<EmailService>());
+// Register Email Service (Singleton to avoid creating multiple instances)
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<IEmailSender>(sp => sp.GetRequiredService<EmailService>());
+builder.Services.AddScoped<IEmailService>(sp => sp.GetRequiredService<EmailService>());
 
 // Register Repositories
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
@@ -59,8 +59,24 @@ builder.Services.AddScoped<IStudentCourseRepository, StudentCourseRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudentCourseService, StudentCourseService>();
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+// ? Add Localization
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
+builder.Services.AddRazorPages()
+    .AddViewLocalization();
+
+// Configure Supported Cultures
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { "en", "ar" };
+    options.SetDefaultCulture("en")
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
 
 var app = builder.Build();
 
@@ -92,6 +108,9 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// ? Use Request Localization
+app.UseRequestLocalization();
 
 app.UseRouting();
 
